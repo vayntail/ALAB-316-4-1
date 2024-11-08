@@ -7,15 +7,22 @@ const passwordEl = form.elements['password'];
 
 form.addEventListener('submit', validate);
 
-function validate(evt) {
+function validate(event) {
     if (!validateUsername()) {
-        evt.returnValue = false;
+        event.returnValue = false;
         return false;
     }
     else if (!validateEmail()) {
-        evt.returnValue = false;
+        event.returnValue = false;
         return false;
     }
+    else if (!validatePassword()) {
+        event.returnValue = false;
+        return false;
+    }
+
+    // store in localStorage
+    localStorage.setItem("users", []);
     return true;
 }
 
@@ -23,7 +30,7 @@ function validateUsername(){
     const regex = /[^A-Za-z0-9]/;
     let username = usernameEl.value;
     let isUnique = false;
-    let containsSpecial = false;
+
     for (let i=0; i < username.length; i++) {
         if (username[i] != username[0]) isUnique = true;
     }
@@ -71,4 +78,25 @@ function validateEmail() {
     }
 }
 
+function validatePassword() {
+    let password = passwordEl.value;
+    if (password.length <= 12) {
+        alert("Your username must be at least 12 characters long.");
+        passwordEl.focus();
+        return false;
+    }
+    else if (password.toLowerCase().includes("password")) {
+        alert(`Your password cannot contain the word "password".`);
+        passwordEl.focus();
+        return false;
+    }
+    else if (password.includes(usernameEl)) {
+        alert("Your password cannot contain the username.");
+        passwordEl.focus();
+        return false;
+    }
+    else {
+        return true;
+    }
+}
 
